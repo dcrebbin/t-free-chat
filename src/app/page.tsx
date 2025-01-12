@@ -1,101 +1,98 @@
-import Image from "next/image";
+import Markdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const defaultText = `### Who made T3 Chat?
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+T3 Chat is made by Ping Labs, a Y Combinator backed startup run by [Theo](https://x.com/theo) and [Mark](https://x.com/r_marked).
+
+We're also the devs behind [UploadThing](https://uploadthing.com), [PicThing](https://pic.ping.gg), the [T3 Stack](https://t3.gg), and the best video call app ever, [Ping.gg](https://ping.gg).
+
+### What models does T3 Chat use?
+
+We're experimenting between a few models, primarily **DeepSeek v3** and **GPT-4o Mini**. We plan to introduce model selection in the near future (we love Claude!).
+
+### How did you make T3 Chat so fast???
+
+We built a lot of bespoke tech to make this possible. The big difference between T3 Chat and other AI chat apps is that we keep all of your data on your device.
+
+### What's next for T3 Chat?
+
+Great question. Theo has a long list of wishes that he's hoping to get added soon, like...
+- Hotkey support
+- Local search
+- Branching chats
+- Desktop app`;
+
+  const newChatIcon = (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      className="lucide lucide-message-square-plus h-4 w-4"
+    >
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+      <path d="M12 7v6"></path>
+      <path d="M9 10h6"></path>
+    </svg>
+  );
+
+  const chatIcon = (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      className="lucide lucide-message-square size-3 shrink-0 text-neutral-400"
+    >
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+    </svg>
+  );
+
+  return (
+    <div className="flex flex-row items-start justify-start h-screen text-white">
+      <div className="flex flex-col items-start w-72 justify-start h-screen border-r border-white/20 p-4 gap-6">
+        <h1 className="text-xl">T3 Chat</h1>
+        <a className="text-pink-400 flex flex-row items-center gap-2">
+          {newChatIcon}
+          New Chat
+        </a>
+        <div className="flex flex-col items-start justify-start gap-2">
+          <h2 className="font-semibold text-neutral-400">Recent Threads</h2>
+          <div className="flex flex-col items-start justify-start gap-2">
+            <div className="flex flex-row items-center gap-2 h-10">
+              {chatIcon} <h3>Why T3 Chat?</h3>
+            </div>
+            <div className="flex flex-row items-center gap-2 h-10">
+              {chatIcon} <h3>Welcome to T3 Chat</h3>
+            </div>
+            <div className="flex flex-row items-center gap-2">
+              {chatIcon} <h3>FAQ</h3>
+            </div>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+      </div>
+      <div className="flex flex-col items-center justify-start h-screen w-full px-[20%] pt-10">
+        <div className="w-full flex flex-row items-center justify-end">
+          <p className="bg-[#2D2D2D] rounded-2xl p-4">
+            Okay, I clicked, now what?
+          </p>
+        </div>
+        <div className="prose prose-invert max-w-none w-full p-8 overflow-auto">
+          <Markdown remarkPlugins={[remarkGfm]}>{defaultText}</Markdown>
+        </div>
+      </div>
     </div>
   );
 }
