@@ -38,7 +38,12 @@ Great question. Theo has a long list of wishes that he's hoping to get added soo
   ]);
 
   let fallingInterval: NodeJS.Timeout | null = null;
+  let collisionInterval: NodeJS.Timeout | null = null;
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
+  const cursorRef = useRef<HTMLImageElement>(null);
+  const state = useRef({
+    cursorHp: 3,
+  });
 
   const chatMessageRefs = useRef<HTMLDivElement[]>([]);
 
@@ -94,6 +99,55 @@ Great question. Theo has a long list of wishes that he's hoping to get added soo
     chatMessageRefs.current[0].style.bottom = `${newY}px`;
     fallToBottom();
     mimicCursor();
+    collisionDetection();
+  }
+
+  function collisionDetection() {
+    if (collisionInterval) {
+      clearInterval(collisionInterval);
+    }
+    collisionInterval = setInterval(() => {
+      const cursor = cursorRef.current;
+      const chatMessage = chatMessageRefs.current[0];
+      const cursorRect = cursor?.getBoundingClientRect();
+      const chatMessageRect = chatMessage?.getBoundingClientRect();
+      if (cursorRect && chatMessageRect) {
+        // Check if cursor overlaps with chat message
+        const overlap = !(
+          cursorRect.right < chatMessageRect.left ||
+          cursorRect.left > chatMessageRect.right ||
+          cursorRect.bottom < chatMessageRect.top ||
+          cursorRect.top > chatMessageRect.bottom
+        );
+
+        if (overlap) {
+          console.log("collision detected");
+          state.current.cursorHp -= 1;
+          updateCursor();
+          clearInterval(collisionInterval!);
+        }
+      }
+    }, 10);
+  }
+
+  function updateCursor() {
+    console.log(state.current.cursorHp);
+    switch (state.current.cursorHp) {
+      case 3:
+        cursorRef.current!.src = "/mouse-1.png";
+        break;
+      case 2:
+        cursorRef.current!.src = "/mouse-2.png";
+        break;
+      case 1:
+        cursorRef.current!.src = "/mouse-3.png";
+        break;
+      case 0:
+        cursorRef.current!.remove();
+        cursorRef.current = null;
+        break;
+    }
+    cursorRef.current!.style.backgroundColor = "transparent";
   }
 
   function mimicCursor() {
@@ -106,10 +160,11 @@ Great question. Theo has a long list of wishes that he's hoping to get added soo
     cursor.style.left = "0";
     cursor.style.width = "20px";
     cursor.style.height = "20px";
+    cursorRef.current = cursor;
     document.body.appendChild(cursor);
     window.addEventListener("mousemove", (e) => {
-      cursor.style.left = `${e.clientX}px`;
-      cursor.style.top = `${e.clientY}px`;
+      cursorRef.current!.style.left = `${e.clientX}px`;
+      cursorRef.current!.style.top = `${e.clientY}px`;
     });
   }
 
