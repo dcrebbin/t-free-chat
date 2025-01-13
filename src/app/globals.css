@@ -12,3 +12,8 @@ body {
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+textarea {
+  font-family: Arial, Helvetica, sans-serif;
+  resize: none;
+}
