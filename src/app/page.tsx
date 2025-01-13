@@ -37,7 +37,10 @@ Great question. Theo has a long list of wishes that he's hoping to get added soo
     { role: "assistant", content: defaultText },
   ]);
 
+  let fallingInterval: NodeJS.Timeout | null = null;
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
+
+  const chatMessageRefs = useRef<HTMLDivElement[]>([]);
 
   const newChatIcon = (
     <svg
@@ -77,16 +80,68 @@ Great question. Theo has a long list of wishes that he's hoping to get added soo
 
   function sendMessage() {
     console.log("sendMessage");
-    alert("sendMessage");
     const message = textAreaRef.current?.value;
     if (message) {
       setMessages([...messages, { role: "user", content: message }]);
       textAreaRef.current!.value = "";
     }
+    chatMessageRefs.current[0].style.position = "absolute";
+    chatMessageRefs.current[0].style.right = "0";
+    chatMessageRefs.current[0].scrollIntoView({ behavior: "smooth" });
+    const currentY = chatMessageRefs.current[0].getBoundingClientRect().y;
+    const windowHeight = window.innerHeight;
+    const newY = windowHeight - currentY;
+    chatMessageRefs.current[0].style.bottom = `${newY}px`;
+    fallToBottom();
+    mimicCursor();
+  }
+
+  function mimicCursor() {
+    document.body.style.cursor = "none";
+    const cursor = document.createElement("img");
+    cursor.src = "/mouse-1.png";
+    cursor.style.position = "fixed";
+    cursor.style.top = "0";
+    cursor.style.zIndex = "9999";
+    cursor.style.left = "0";
+    cursor.style.width = "20px";
+    cursor.style.height = "20px";
+    document.body.appendChild(cursor);
+    window.addEventListener("mousemove", (e) => {
+      cursor.style.left = `${e.clientX}px`;
+      cursor.style.top = `${e.clientY}px`;
+    });
+  }
+
+  function fallToBottom() {
+    if (fallingInterval) {
+      clearInterval(fallingInterval);
+    }
+    fallingInterval = setInterval(() => {
+      const currentBottom = parseInt(chatMessageRefs.current[0].style.bottom);
+      const currentRotation = chatMessageRefs.current[0].style.transform
+        ? parseInt(
+            chatMessageRefs.current[0].style.transform.match(
+              /rotate\((-?\d+)deg\)/
+            )?.[1] || "0"
+          )
+        : 0;
+
+      if (currentBottom + 200 <= 0) {
+        clearInterval(fallingInterval!);
+        return;
+      }
+
+      const newRotation = currentRotation + (Math.random() * 10 - 5); // Random rotation between -5 and 5 degrees
+      chatMessageRefs.current[0].style.transform = `rotate(${newRotation}deg)`;
+      chatMessageRefs.current[0].style.bottom = `${currentBottom - 5}px`;
+    }, 10);
   }
 
   return (
-    <div className="flex flex-col items-start justify-start h-screen text-white">
+    <div
+      className={`flex flex-col items-start justify-start h-screen text-white overflow-hidden`}
+    >
       <div className="flex flex-row items-start justify-start h-screen">
         <div className="flex flex-col items-start w-72 justify-start h-screen border-r border-white/20 p-4 gap-6">
           <h1 className="text-xl">T3 Chat</h1>
@@ -109,12 +164,17 @@ Great question. Theo has a long list of wishes that he's hoping to get added soo
             </div>
           </div>
         </div>
-        <div className="relative flex flex-col items-center justify-start h-screen w-full px-[5%] lg:px-[10%] xl:px-[20%] pt-10">
-          <div className="flex flex-col items-start justify-start gap-4 overflow-y-auto p-4">
+        <div className="relative flex overflow-auto flex-col items-center justify-start h-screen w-full px-[5%] lg:px-[10%] xl:px-[20%] pt-10">
+          <div className="flex relative flex-col items-start justify-start gap-4 overflow-y-auto p-4">
             {messages.map((message, index) =>
               message.role === "user" ? (
                 <div
                   key={index}
+                  ref={(el) => {
+                    if (el) {
+                      chatMessageRefs.current[index] = el;
+                    }
+                  }}
                   className="w-full flex flex-row items-center justify-end"
                 >
                   <p className="bg-[#2D2D2D] rounded-2xl p-4">
@@ -124,6 +184,11 @@ Great question. Theo has a long list of wishes that he's hoping to get added soo
               ) : (
                 <div
                   key={index}
+                  ref={(el) => {
+                    if (el) {
+                      chatMessageRefs.current[index] = el;
+                    }
+                  }}
                   className="prose prose-invert max-w-none w-full p-8"
                 >
                   <Markdown remarkPlugins={[remarkGfm]}>
