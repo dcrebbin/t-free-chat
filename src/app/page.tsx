@@ -100,8 +100,38 @@ Great question. Theo has a long list of wishes that he's hoping to get added soo
     const newY = windowHeight - currentY;
     chatMessageRefs.current[0].style.bottom = `${newY}px`;
     fallToBottom();
+    playBossMusic();
     mimicCursor();
     collisionDetection();
+  }
+
+  function playBossMusic() {
+    const audio = new Audio("/boss-music.mp3");
+    audio.loop = true;
+    audio.play();
+  }
+
+  function shakeScreen() {
+    const screen = document.body;
+    screen.style.animation = "shake 0.5s infinite";
+    screen.style.animationTimingFunction = "ease-in-out";
+
+    if (!document.querySelector("#shake-keyframes")) {
+      const style = document.createElement("style");
+      style.id = "shake-keyframes";
+      style.textContent = `
+        @keyframes shake {
+          0%, 100% { transform: translateX(0); }
+          25% { transform: translateX(-25px) translateY(-25px); }
+          75% { transform: translateX(25px) translateY(25px); }
+        }
+      `;
+      document.head.appendChild(style);
+    }
+
+    setTimeout(() => {
+      screen.style.animation = "";
+    }, 200);
   }
 
   function collisionDetection() {
@@ -132,6 +162,7 @@ Great question. Theo has a long list of wishes that he's hoping to get added soo
   function hit() {
     state.current.cursorHp -= 1;
     updateCursor();
+    shakeScreen();
     flashRef.current!.classList.remove("hidden");
     if (hitInterval) {
       clearTimeout(hitInterval);
