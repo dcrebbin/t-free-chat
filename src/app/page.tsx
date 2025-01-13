@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
@@ -57,9 +57,9 @@ Great question. Theo has a long list of wishes that he's hoping to get added soo
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      stroke-width="2"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
       className="lucide lucide-message-square-plus h-4 w-4"
     >
       <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
@@ -76,9 +76,9 @@ Great question. Theo has a long list of wishes that he's hoping to get added soo
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      stroke-width="2"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
       className="lucide lucide-message-square size-3 shrink-0 text-neutral-400"
     >
       <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
@@ -114,7 +114,6 @@ Great question. Theo has a long list of wishes that he's hoping to get added soo
       const cursorRect = cursor?.getBoundingClientRect();
       const chatMessageRect = chatMessage?.getBoundingClientRect();
       if (cursorRect && chatMessageRect) {
-        // Check if cursor overlaps with chat message
         const overlap = !(
           cursorRect.right < chatMessageRect.left ||
           cursorRect.left > chatMessageRect.right ||
@@ -128,7 +127,7 @@ Great question. Theo has a long list of wishes that he's hoping to get added soo
           clearInterval(collisionInterval!);
         }
       }
-    }, 10);
+    }, 50);
   }
   function hit() {
     state.current.cursorHp -= 1;
