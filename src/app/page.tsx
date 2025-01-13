@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
@@ -39,6 +39,8 @@ Great question. Theo has a long list of wishes that he's hoping to get added soo
 
   let fallingInterval: NodeJS.Timeout | null = null;
   let collisionInterval: NodeJS.Timeout | null = null;
+  let hitInterval: NodeJS.Timeout | null = null;
+  const flashRef = useRef<HTMLDivElement>(null);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const cursorRef = useRef<HTMLImageElement>(null);
   const state = useRef({
@@ -122,12 +124,23 @@ Great question. Theo has a long list of wishes that he's hoping to get added soo
 
         if (overlap) {
           console.log("collision detected");
-          state.current.cursorHp -= 1;
-          updateCursor();
+          hit();
           clearInterval(collisionInterval!);
         }
       }
     }, 10);
+  }
+  function hit() {
+    state.current.cursorHp -= 1;
+    updateCursor();
+    flashRef.current!.classList.remove("hidden");
+    if (hitInterval) {
+      clearTimeout(hitInterval);
+    }
+    hitInterval = setTimeout(() => {
+      flashRef.current!.classList.add("hidden");
+      hitInterval = null;
+    }, 30);
   }
 
   function updateCursor() {
@@ -272,6 +285,10 @@ Great question. Theo has a long list of wishes that he's hoping to get added soo
           </div>
         </div>
       </div>
+      <div
+        ref={flashRef}
+        className="hidden fixed top-0 left-0 w-full h-full z-9999 bg-white"
+      ></div>
     </div>
   );
 }
